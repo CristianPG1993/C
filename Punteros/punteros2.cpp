@@ -19,5 +19,4 @@ int main(){
 
     cout << "El valor de numero es: " << numero << endl;
     
-
 }
