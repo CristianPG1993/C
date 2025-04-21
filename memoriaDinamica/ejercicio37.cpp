@@ -197,7 +197,7 @@ void buscarBarcoPorDestino(Puerto* puertos, int cantidad){
                 encontrado = true;
 
                 cout << "\nPuerto " << i + 1 << ":" << endl;
-                cout << "Nombre del puerto: " << puertos[i].nombrePuerto << endl;
+                cout << "Nombre del puerto: " << puertos[i].barcos[j].nombreBarco << endl;
                 cout << "Tipo de carga: " << puertos[i].barcos[j].tipoCarga << endl;
                 cout << "Ciudad de destino: " << puertos[i].barcos[j].ciudadDestino << endl;
                 cout << "Pasajeros: " << puertos[i].barcos[j].cantidadPersonas << endl;
