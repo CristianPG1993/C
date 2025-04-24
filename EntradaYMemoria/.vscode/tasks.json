@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Compilar con g++",
+        "type": "shell",
+        "command": "g++",
+        "args": [
+          "-g",
+          "getline_sin_ignore.cpp",
+          "-o",
+          "getline_sin_ignore.exe"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+  
