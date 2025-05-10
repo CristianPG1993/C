@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "iostream": "cpp"
-    }
+        "iostream": "cpp",
+        "mutex": "cpp",
+        "thread": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
