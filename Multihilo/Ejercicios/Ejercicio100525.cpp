@@ -19,58 +19,62 @@
 */
 
 
-#include <iostream>
-#include <thread>
-#include <mutex>
-#include <vector>
-#include <chrono>
+#include <iostream>   // Para imprimir en consola
+#include <thread>     // Para manejar múltiples hilos
+#include <mutex>      // Para evitar condiciones de carrera con std::mutex
+#include <vector>     // Para almacenar los hilos en un vector
+#include <chrono>     // Para medir el tiempo de ejecución
 
-int contador =  0; 
+// Variable compartida entre los hilos
+int contador = 0;
+
+// Mutex para proteger la variable compartida 'contador'
 std::mutex mi_mutex;
 
+// Función que ejecutará cada hilo
 void tarea(int id, int repeticiones){
-    
-    
-
     for (int i = 0; i < repeticiones; i++){
         
+        // Imprime el número del hilo. Esto puede generar salidas mezcladas en consola.
         std::cout << "Hilo " << id << std::endl;
 
         {
+            // Sección crítica protegida por mutex
             std::lock_guard<std::mutex> lock(mi_mutex);
-            contador++;
+            
+            contador++;  // Incrementa el contador de forma segura
+
+            // Imprime el valor actualizado del contador
             std::cout << "Contador:  " << contador << std::endl;
         }
-        
-        
     }
 }
 
-
-
-
 int main(){
+    const int numeroHilos = 10;      // Total de hilos a lanzar
+    const int repeticiones = 1000;   // Número de veces que cada hilo ejecuta la tarea
 
-    const int numeroHilos = 10;
-    const int repeticiones = 1000;
+    std::vector<std::thread> hilos;  // Vector para almacenar los hilos
 
-    std::vector<std::thread> hilos;
+    // Marca el inicio de la ejecución
     auto inicio = std::chrono::high_resolution_clock::now();
 
-
-    for (int i = 0; i < numeroHilos;i++){
-
-        hilos.push_back(std::thread(tarea, i+1, repeticiones));
+    // Crea y lanza todos los hilos
+    for (int i = 0; i < numeroHilos; i++){
+        hilos.push_back(std::thread(tarea, i + 1, repeticiones));
     }
 
+    // Espera a que todos los hilos terminen
     for (auto& h : hilos){
-
         h.join();
     }
 
+    // Marca el final de la ejecución
     auto fin = std::chrono::high_resolution_clock::now();
+
+    // Calcula la duración de la ejecución
     std::chrono::duration<double> duracion = fin - inicio;
+
+    // Muestra el tiempo total que tardó el programa
     std::cout << "Tiempo total: " << duracion.count() << " segundos" << std::endl;
-
-
-} 
+}

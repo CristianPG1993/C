@@ -25,51 +25,53 @@
 */
 
 
-#include <iostream>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <mutex>
+#include <iostream>              // Para entrada/salida estándar (cout).
+#include <vector>                // Para usar el contenedor vector.
+#include <chrono>                // Para medir tiempos de ejecución.
+#include <thread>                // Para usar hilos (std::thread).
+#include <mutex>                 // Para usar mutex y evitar condiciones de carrera.
 
+// Variable global compartida por todos los hilos
 int contador = 0;
+
+// Mutex para sincronizar el acceso a la variable compartida 'contador'
 std::mutex mi_mutex;
 
+// Función que será ejecutada por cada hilo
 void tarea(int id, int repeticiones){
-
     for (int i = 0; i < repeticiones; i++){
-
+        // lock_guard asegura que el mutex se libera automáticamente al salir del scope
         std::lock_guard<std::mutex> lock(mi_mutex);
-        contador++;
+        contador++; // Sección crítica: se accede a recurso compartido
     }
-
 }
 
 int main(){
+    const int numeroHilos = 100;      // Total de hilos que se van a crear
+    const int repeticiones = 2000;    // Cuántas veces incrementará cada hilo el contador
 
-    const int numeroHilos = 100;
-    const int repeticiones = 2000;
+    std::vector<std::thread> hilos;   // Vector que almacenará los hilos
 
-    std::vector<std::thread> hilos;
-
+    // Inicio del cronómetro para medir el rendimiento
     auto inicio = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < numeroHilos;i++){
-
+    // Lanzamiento de hilos
+    for (int i = 0; i < numeroHilos; i++){
         hilos.push_back(std::thread(tarea, i+1, repeticiones));
-
     }
 
+    // Espera a que todos los hilos terminen
     for (auto& h : hilos){
-
-        h.join();
-
+        h.join(); // join() bloquea hasta que el hilo termine
     }
 
+    // Fin del cronómetro
     auto fin = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duracion = fin - inicio;
 
-    std::cout << "El tiempo de ejecución del proceso ha sido: " << duracion.count() << " segundos. " <<  std::endl;
+    // Mostrar resultados
+    std::cout << "El tiempo de ejecución del proceso ha sido: " 
+              << duracion.count() << " segundos. " <<  std::endl;
+
     std::cout << "Valor final del contador: " << contador << std::endl;
-
-
 }
